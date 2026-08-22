@@ -38,9 +38,9 @@ InstaFollowAnalyzer
 
 ## 📦 Descargar aplicación
 
-Puedes descargar la última versión de **InstaFollowAnalyzer** desde la sección de Releases de GitHub.
+Puedes descargar la última versión de **InstaFollowAnalyzer** desde aquí:
 
-👉 [Descargar InstaFollowAnalyzer](https://github.com/sandragonzalezdiaz1/insta-follow-analyzer/releases/tag/v1.0.0)
+👉 [Descargar InstaFollowAnalyzer](https://github.com/sandragonzalezdiaz1/insta-follow-analyzer/releases/latest)
 
 ### Requisitos
 

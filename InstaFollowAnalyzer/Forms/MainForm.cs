@@ -1,3 +1,4 @@
+using FontAwesome.Sharp;
 using InstaFollowAnalyzer.Services;
 using System.Diagnostics;
 
@@ -10,24 +11,31 @@ namespace InstaFollowAnalyzer
 
         private List<string> _following = [];
         private List<string> _followers = [];
+        private bool _followingLoaded;
+        private bool _followersLoaded;
         private List<InstagramUserRow> _notFollowingBackRows = [];
         private List<InstagramUserRow> _youDoNotFollowBackRows = [];
         private List<InstagramUserRow> _mutualFollowerRows = [];
-        private ResultsView _activeResultsView = ResultsView.NotFollowingBack;
+        private ResultType _activeResultType = ResultType.NotFollowingBack;
+        private TableLayoutPanel? _bodyLayout;
+        private readonly Label _emptyStateLabel = new();
 
         public MainForm()
         {
             InitializeComponent();
+            txtSearch.Enabled = false;
+            ConfigureHeaderButtons();
             ConfigureResultsTabs();
-            ConfigureUsersGrids();
+            ConfigureResultsGrid();
             RegisterGridLinkEvents();
-            CenterContent();
+            BuildResponsiveLayout();
+            SetResultsAreaVisible(false);
         }
 
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
-            CenterContent();
+            UpdateResponsiveContentWidth();
         }
 
         private async void btnLoadFollowing_Click(object sender, EventArgs e)
@@ -42,16 +50,11 @@ namespace InstaFollowAnalyzer
             try
             {
                 _following = await _instaJsonService.ReadFollowingUsernamesAsync(filePath);
-
-                MessageBox.Show(
-                    $"Archivo de seguidos cargado correctamente.\nUsuarios encontrados: {_following.Count}",
-                    "Following cargado",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information
-                );
+                _followingLoaded = true;
+                MarkHeaderButtonAsLoaded(btnLoadFollowing, "Seguidos cargados");
 
                 UpdateCounters(0, 0, 0);
-                CompareIfBothFilesAreLoaded();
+                CompareFilesIfReady();
             }
             catch (InvalidDataException ex)
             {
@@ -85,16 +88,11 @@ namespace InstaFollowAnalyzer
             try
             {
                 _followers = await _instaJsonService.ReadFollowerUsernamesAsync(filePath);
-
-                MessageBox.Show(
-                    $"Archivo de seguidores cargado correctamente.\nUsuarios encontrados: {_followers.Count}",
-                    "Followers cargado",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information
-                );
+                _followersLoaded = true;
+                MarkHeaderButtonAsLoaded(btnLoadFollowers, "Seguidores cargados");
 
                 UpdateCounters(0, 0, 0);
-                CompareIfBothFilesAreLoaded();
+                CompareFilesIfReady();
             }
             catch (InvalidDataException ex)
             {
@@ -128,9 +126,9 @@ namespace InstaFollowAnalyzer
                 : null;
         }
 
-        private void CompareIfBothFilesAreLoaded()
+        private void CompareFilesIfReady()
         {
-            if (_following.Count == 0 || _followers.Count == 0)
+            if (!_followingLoaded || !_followersLoaded)
             {
                 return;
             }
@@ -150,19 +148,19 @@ namespace InstaFollowAnalyzer
                 mutualFollowers.Count
             );
 
-            ShowUsersInTabs(notFollowingYouBack, youDoNotFollowBack, mutualFollowers);
+            LoadComparisonResults(notFollowingYouBack, youDoNotFollowBack, mutualFollowers);
         }
 
-        private void ConfigureUsersGrids()
+        private void ConfigureResultsGrid()
         {
-            ConfigureUsersGrid(dgvNotFollowingBack);
+            ConfigureUsersGrid(dgvResults);
         }
 
         private void ConfigureResultsTabs()
         {
-            btnTabNotFollowingBack.Click += (_, _) => SelectResultsView(ResultsView.NotFollowingBack);
-            btnTabYouDoNotFollowBack.Click += (_, _) => SelectResultsView(ResultsView.YouDoNotFollowBack);
-            btnTabMutualFollowers.Click += (_, _) => SelectResultsView(ResultsView.MutualFollowers);
+            btnTabNotFollowingBack.Click += (_, _) => SelectResultType(ResultType.NotFollowingBack);
+            btnTabYouDoNotFollowBack.Click += (_, _) => SelectResultType(ResultType.YouDoNotFollowBack);
+            btnTabMutualFollowers.Click += (_, _) => SelectResultType(ResultType.Mutual);
             UpdateTabButtonStyles();
         }
 
@@ -230,9 +228,9 @@ namespace InstaFollowAnalyzer
             }
         }
 
-        private void SelectResultsView(ResultsView resultsView)
+        private void SelectResultType(ResultType resultType)
         {
-            _activeResultsView = resultsView;
+            _activeResultType = resultType;
             UpdateTabButtonStyles();
             ApplySearchFilter();
         }
@@ -241,21 +239,21 @@ namespace InstaFollowAnalyzer
         {
             StyleTabButton(
                 btnTabNotFollowingBack,
-                _activeResultsView == ResultsView.NotFollowingBack,
+                _activeResultType == ResultType.NotFollowingBack,
                 Color.FromArgb(255, 241, 242),
                 Color.FromArgb(190, 18, 60)
             );
 
             StyleTabButton(
                 btnTabYouDoNotFollowBack,
-                _activeResultsView == ResultsView.YouDoNotFollowBack,
+                _activeResultType == ResultType.YouDoNotFollowBack,
                 Color.FromArgb(239, 246, 255),
                 Color.FromArgb(37, 99, 235)
             );
 
             StyleTabButton(
                 btnTabMutualFollowers,
-                _activeResultsView == ResultsView.MutualFollowers,
+                _activeResultType == ResultType.Mutual,
                 Color.FromArgb(236, 253, 245),
                 Color.FromArgb(4, 120, 87)
             );
@@ -268,50 +266,234 @@ namespace InstaFollowAnalyzer
             button.Font = new Font(button.Font, isSelected ? FontStyle.Bold : FontStyle.Regular);
         }
 
-        private void CenterContent()
+        private void BuildResponsiveLayout()
         {
-            const int statWidth = 188;
-            const int statGap = 28;
-            const int statTop = 116;
-            const int searchWidth = 700;
-            const int tableWidth = 700;
-            const int resultsTop = 328;
+            if (_bodyLayout is not null)
+            {
+                return;
+            }
 
-            int statsTotalWidth = (statWidth * 5) + (statGap * 4);
-            int statsLeft = Math.Max(24, (ClientSize.Width - statsTotalWidth) / 2);
+            SuspendLayout();
 
-            statFollowingPanel.Location = new Point(statsLeft, statTop);
-            statFollowersPanel.Location = new Point(statsLeft + (statWidth + statGap), statTop);
-            statNotFollowingBackPanel.Location = new Point(statsLeft + ((statWidth + statGap) * 2), statTop);
-            statYouDoNotFollowBackPanel.Location = new Point(statsLeft + ((statWidth + statGap) * 3), statTop);
-            statMutualPanel.Location = new Point(statsLeft + ((statWidth + statGap) * 4), statTop);
+            Controls.Remove(statFollowingPanel);
+            Controls.Remove(statFollowersPanel);
+            Controls.Remove(statNotFollowingBackPanel);
+            Controls.Remove(statYouDoNotFollowBackPanel);
+            Controls.Remove(statMutualPanel);
+            Controls.Remove(searchPanel);
+            Controls.Remove(tabButtonsPanel);
+            Controls.Remove(dgvResults);
 
-            searchPanel.Width = searchWidth;
-            searchPanel.Left = Math.Max(24, (ClientSize.Width - searchPanel.Width) / 2);
-            txtSearch.Width = searchPanel.Width - 70;
+            _bodyLayout = new TableLayoutPanel
+            {
+                BackColor = BackColor,
+                ColumnCount = 3,
+                Dock = DockStyle.Fill,
+                Padding = new Padding(24, topPanel.Height + 32, 24, 32),
+                RowCount = 7
+            };
 
-            int resultsLeft = Math.Max(24, (ClientSize.Width - tableWidth) / 2);
-            tabButtonsPanel.SetBounds(resultsLeft, resultsTop, tableWidth, 34);
+            _bodyLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            _bodyLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, GetResponsiveContentWidth()));
+            _bodyLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
 
-            int tabWidth = tableWidth / 3;
-            btnTabNotFollowingBack.SetBounds(0, 0, tabWidth, tabButtonsPanel.Height);
-            btnTabYouDoNotFollowBack.SetBounds(tabWidth, 0, tabWidth, tabButtonsPanel.Height);
-            btnTabMutualFollowers.SetBounds(tabWidth * 2, 0, tableWidth - (tabWidth * 2), tabButtonsPanel.Height);
+            _bodyLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 0F));
+            _bodyLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 104F));
+            _bodyLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 24F));
+            _bodyLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 50F));
+            _bodyLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 28F));
+            _bodyLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 34F));
+            _bodyLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
 
-            dgvNotFollowingBack.SetBounds(
-                resultsLeft,
-                tabButtonsPanel.Bottom,
-                tableWidth,
-                Math.Max(160, ClientSize.Height - tabButtonsPanel.Bottom - 32)
-            );
+            _bodyLayout.Controls.Add(CreateStatsLayout(), 1, 1);
+            _bodyLayout.Controls.Add(ConfigureSearchLayout(), 1, 3);
+            _bodyLayout.Controls.Add(CreateTabButtonsLayout(), 1, 5);
+
+            dgvResults.Dock = DockStyle.Fill;
+            dgvResults.Margin = Padding.Empty;
+            _bodyLayout.Controls.Add(dgvResults, 1, 6);
+
+            _bodyLayout.Controls.Add(ConfigureEmptyStateLabel(), 1, 3);
+            _bodyLayout.SetRowSpan(_emptyStateLabel, 4);
+
+            Controls.Add(_bodyLayout);
+            topPanel.BringToFront();
+
+            ResumeLayout(false);
+        }
+
+        private TableLayoutPanel CreateStatsLayout()
+        {
+            TableLayoutPanel statsLayout = new()
+            {
+                ColumnCount = 5,
+                Dock = DockStyle.Fill,
+                Margin = Padding.Empty,
+                RowCount = 1
+            };
+
+            for (int i = 0; i < 5; i++)
+            {
+                statsLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20F));
+            }
+
+            AddStatCard(statsLayout, statFollowingPanel, 0);
+            AddStatCard(statsLayout, statFollowersPanel, 1);
+            AddStatCard(statsLayout, statNotFollowingBackPanel, 2);
+            AddStatCard(statsLayout, statYouDoNotFollowBackPanel, 3);
+            AddStatCard(statsLayout, statMutualPanel, 4);
+
+            return statsLayout;
+        }
+
+        private static void AddStatCard(TableLayoutPanel statsLayout, Panel statPanel, int column)
+        {
+            statPanel.Dock = DockStyle.Fill;
+            statPanel.Margin = new Padding(9, 0, 9, 0);
+            statsLayout.Controls.Add(statPanel, column, 0);
+        }
+
+        private void ConfigureHeaderButtons()
+        {
+            ConfigureHeaderButton(btnLoadFollowing);
+            ConfigureHeaderButton(btnLoadFollowers);
+        }
+
+        private static void ConfigureHeaderButton(IconButton button)
+        {
+            button.IconSize = 17;
+            button.ImageAlign = ContentAlignment.MiddleCenter;
+            button.TextAlign = ContentAlignment.MiddleCenter;
+            button.TextImageRelation = TextImageRelation.ImageBeforeText;
+            button.Padding = new Padding(0);
+        }
+
+        private static void MarkHeaderButtonAsLoaded(IconButton button, string text)
+        {
+            button.Text = text;
+            button.IconChar = IconChar.Check;
+            button.BackColor = Color.FromArgb(16, 185, 129);
+            button.ForeColor = Color.White;
+            button.IconColor = Color.White;
+        }
+
+        private Panel ConfigureSearchLayout()
+        {
+            searchPanel.Controls.Clear();
+            searchPanel.Dock = DockStyle.Fill;
+            searchPanel.Margin = Padding.Empty;
+            searchPanel.Padding = new Padding(12, 9, 12, 9);
+
+            TableLayoutPanel searchLayout = new()
+            {
+                BackColor = searchPanel.BackColor,
+                ColumnCount = 2,
+                Dock = DockStyle.Fill,
+                Margin = Padding.Empty,
+                RowCount = 1
+            };
+
+            searchLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 34F));
+            searchLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+
+            btnSearchIcon.Dock = DockStyle.Fill;
+            btnSearchIcon.Margin = Padding.Empty;
+            btnSearchIcon.Padding = new Padding(0);
+            btnSearchIcon.Text = "";
+
+            txtSearch.Dock = DockStyle.Fill;
+            txtSearch.Margin = new Padding(8, 4, 0, 0);
+
+            searchLayout.Controls.Add(btnSearchIcon, 0, 0);
+            searchLayout.Controls.Add(txtSearch, 1, 0);
+            searchPanel.Controls.Add(searchLayout);
+
+            return searchPanel;
+        }
+
+        private Label ConfigureEmptyStateLabel()
+        {
+            _emptyStateLabel.Dock = DockStyle.Fill;
+            _emptyStateLabel.Margin = Padding.Empty;
+            _emptyStateLabel.Padding = new Padding(24, 48, 24, 0);
+            _emptyStateLabel.Text = "Carga los archivos de seguidos y seguidores para comenzar";
+            _emptyStateLabel.TextAlign = ContentAlignment.TopCenter;
+            _emptyStateLabel.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            _emptyStateLabel.ForeColor = Color.FromArgb(71, 85, 105);
+            _emptyStateLabel.BackColor = BackColor;
+
+            return _emptyStateLabel;
+        }
+
+        private Panel CreateTabButtonsLayout()
+        {
+            tabButtonsPanel.Controls.Clear();
+            tabButtonsPanel.Dock = DockStyle.Fill;
+            tabButtonsPanel.Margin = Padding.Empty;
+
+            TableLayoutPanel tabsLayout = new()
+            {
+                ColumnCount = 3,
+                Dock = DockStyle.Fill,
+                Margin = Padding.Empty,
+                RowCount = 1
+            };
+
+            for (int i = 0; i < 3; i++)
+            {
+                tabsLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3333F));
+            }
+
+            AddTabButton(tabsLayout, btnTabNotFollowingBack, 0);
+            AddTabButton(tabsLayout, btnTabYouDoNotFollowBack, 1);
+            AddTabButton(tabsLayout, btnTabMutualFollowers, 2);
+
+            tabButtonsPanel.Controls.Add(tabsLayout);
+            return tabButtonsPanel;
+        }
+
+        private static void AddTabButton(TableLayoutPanel tabsLayout, Button button, int column)
+        {
+            button.Dock = DockStyle.Fill;
+            button.Margin = Padding.Empty;
+            tabsLayout.Controls.Add(button, column, 0);
+        }
+
+        private void UpdateResponsiveContentWidth()
+        {
+            if (_bodyLayout is null)
+            {
+                return;
+            }
+
+            _bodyLayout.ColumnStyles[1].Width = GetResponsiveContentWidth();
+        }
+
+        private int GetResponsiveContentWidth()
+        {
+            const int preferredContentWidth = 700;
+            const int minimumContentWidth = 420;
+            const int horizontalPadding = 48;
+
+            int availableWidth = Math.Max(minimumContentWidth, ClientSize.Width - horizontalPadding);
+            return Math.Min(preferredContentWidth, availableWidth);
+        }
+
+        private void SetResultsAreaVisible(bool isReady)
+        {
+            searchPanel.Visible = isReady;
+            tabButtonsPanel.Visible = isReady;
+            dgvResults.Visible = isReady;
+            _emptyStateLabel.Visible = !isReady;
+            txtSearch.Enabled = isReady;
         }
 
         private void RegisterGridLinkEvents()
         {
-            dgvNotFollowingBack.CellContentClick += dgvUsers_CellContentClick;
+            dgvResults.CellContentClick += dgvUsers_CellContentClick;
         }
 
-        private void ShowUsersInTabs(
+        private void LoadComparisonResults(
             List<string> notFollowingYouBack,
             List<string> youDoNotFollowBack,
             List<string> mutualFollowers)
@@ -320,7 +502,8 @@ namespace InstaFollowAnalyzer
             _youDoNotFollowBackRows = CreateRows(youDoNotFollowBack);
             _mutualFollowerRows = CreateRows(mutualFollowers);
 
-            _activeResultsView = ResultsView.NotFollowingBack;
+            SetResultsAreaVisible(true);
+            _activeResultType = ResultType.NotFollowingBack;
             UpdateTabButtonStyles();
             ApplySearchFilter();
         }
@@ -357,16 +540,16 @@ namespace InstaFollowAnalyzer
         {
             string searchText = txtSearch.Text.Trim();
 
-            SetGridDataSource(dgvNotFollowingBack, FilterRows(GetActiveRows(), searchText));
+            SetGridDataSource(FilterRows(GetActiveRows(), searchText));
         }
 
         private List<InstagramUserRow> GetActiveRows()
         {
-            return _activeResultsView switch
+            return _activeResultType switch
             {
-                ResultsView.NotFollowingBack => _notFollowingBackRows,
-                ResultsView.YouDoNotFollowBack => _youDoNotFollowBackRows,
-                ResultsView.MutualFollowers => _mutualFollowerRows,
+                ResultType.NotFollowingBack => _notFollowingBackRows,
+                ResultType.YouDoNotFollowBack => _youDoNotFollowBackRows,
+                ResultType.Mutual => _mutualFollowerRows,
                 _ => []
             };
         }
@@ -385,12 +568,11 @@ namespace InstaFollowAnalyzer
                 .ToList();
         }
 
-        private static void SetGridDataSource(
-            DataGridView grid,
+        private void SetGridDataSource(
             List<InstagramUserRow> rows)
         {
-            grid.DataSource = null;
-            grid.DataSource = rows;
+            dgvResults.DataSource = null;
+            dgvResults.DataSource = rows;
         }
 
         private static string BuildInstagramProfileUrl(string username)
@@ -428,11 +610,11 @@ namespace InstaFollowAnalyzer
             public string ProfileUrl { get; set; } = "";
         }
 
-        private enum ResultsView
+        private enum ResultType
         {
             NotFollowingBack,
             YouDoNotFollowBack,
-            MutualFollowers
+            Mutual
         }
 
       

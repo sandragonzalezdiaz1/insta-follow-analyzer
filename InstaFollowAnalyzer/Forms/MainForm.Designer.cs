@@ -45,13 +45,7 @@ namespace InstaFollowAnalyzer
             lblYouDoNotFollowBackCaption = new Label();
             statMutualPanel = new Panel();
             lblMutualCaption = new Label();
-            tabResults = new TabControl();
-            tabNotFollowingBack = new TabPage();
-            tabYouDoNotFollowBack = new TabPage();
-            dgvYouDoNotFollowBack = new DataGridView();
-            tabMutualFollowers = new TabPage();
-            dgvMutualFollowers = new DataGridView();
-            dgvNotFollowingBack = new DataGridView();
+            dgvResults = new DataGridView();
             notifyIcon1 = new NotifyIcon(components);
             statFollowingPanel = new Panel();
             topPanel.SuspendLayout();
@@ -61,12 +55,7 @@ namespace InstaFollowAnalyzer
             statNotFollowingBackPanel.SuspendLayout();
             statYouDoNotFollowBackPanel.SuspendLayout();
             statMutualPanel.SuspendLayout();
-            tabResults.SuspendLayout();
-            tabYouDoNotFollowBack.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dgvYouDoNotFollowBack).BeginInit();
-            tabMutualFollowers.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dgvMutualFollowers).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)dgvNotFollowingBack).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dgvResults).BeginInit();
             statFollowingPanel.SuspendLayout();
             SuspendLayout();
             // 
@@ -304,6 +293,7 @@ namespace InstaFollowAnalyzer
             statFollowersPanel.Padding = new Padding(0, 12, 0, 12);
             statFollowersPanel.Size = new Size(188, 104);
             statFollowersPanel.TabIndex = 2;
+            statFollowersPanel.Anchor = AnchorStyles.Top;
             // 
             // lblFollowersCaption
             // 
@@ -326,6 +316,7 @@ namespace InstaFollowAnalyzer
             statNotFollowingBackPanel.Padding = new Padding(0, 12, 0, 12);
             statNotFollowingBackPanel.Size = new Size(188, 104);
             statNotFollowingBackPanel.TabIndex = 3;
+            statNotFollowingBackPanel.Anchor = AnchorStyles.Top;
             // 
             // lblNotFollowingBackCaption
             // 
@@ -348,6 +339,7 @@ namespace InstaFollowAnalyzer
             statYouDoNotFollowBackPanel.Padding = new Padding(0, 12, 0, 12);
             statYouDoNotFollowBackPanel.Size = new Size(188, 104);
             statYouDoNotFollowBackPanel.TabIndex = 4;
+            statYouDoNotFollowBackPanel.Anchor = AnchorStyles.Top;
             // 
             // lblYouDoNotFollowBackCaption
             // 
@@ -370,6 +362,7 @@ namespace InstaFollowAnalyzer
             statMutualPanel.Padding = new Padding(0, 12, 0, 12);
             statMutualPanel.Size = new Size(188, 104);
             statMutualPanel.TabIndex = 5;
+            statMutualPanel.Anchor = AnchorStyles.Top;
             // 
             // lblMutualCaption
             // 
@@ -382,100 +375,22 @@ namespace InstaFollowAnalyzer
             lblMutualCaption.Text = "Mutuos";
             lblMutualCaption.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // tabResults
+            // dgvResults
             // 
-            tabResults.Anchor = AnchorStyles.Top | AnchorStyles.Bottom;
-            tabResults.Controls.Add(tabNotFollowingBack);
-            tabResults.Controls.Add(tabYouDoNotFollowBack);
-            tabResults.Controls.Add(tabMutualFollowers);
-            tabResults.Location = new Point(234, 328);
-            tabResults.Name = "tabResults";
-            tabResults.SelectedIndex = 0;
-            tabResults.Size = new Size(700, 257);
-            tabResults.TabIndex = 7;
-            // 
-            // tabNotFollowingBack
-            // 
-            tabNotFollowingBack.Location = new Point(4, 34);
-            tabNotFollowingBack.Name = "tabNotFollowingBack";
-            tabNotFollowingBack.Padding = new Padding(3);
-            tabNotFollowingBack.Size = new Size(692, 219);
-            tabNotFollowingBack.TabIndex = 0;
-            tabNotFollowingBack.Text = "No me siguen";
-            tabNotFollowingBack.UseVisualStyleBackColor = true;
-            // 
-            // tabYouDoNotFollowBack
-            // 
-            tabYouDoNotFollowBack.Controls.Add(dgvYouDoNotFollowBack);
-            tabYouDoNotFollowBack.Location = new Point(4, 34);
-            tabYouDoNotFollowBack.Name = "tabYouDoNotFollowBack";
-            tabYouDoNotFollowBack.Padding = new Padding(3);
-            tabYouDoNotFollowBack.Size = new Size(692, 219);
-            tabYouDoNotFollowBack.TabIndex = 1;
-            tabYouDoNotFollowBack.Text = "No sigo";
-            tabYouDoNotFollowBack.UseVisualStyleBackColor = true;
-            // 
-            // dgvYouDoNotFollowBack
-            // 
-            dgvYouDoNotFollowBack.AllowUserToAddRows = false;
-            dgvYouDoNotFollowBack.AllowUserToDeleteRows = false;
-            dgvYouDoNotFollowBack.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgvYouDoNotFollowBack.BackgroundColor = Color.White;
-            dgvYouDoNotFollowBack.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvYouDoNotFollowBack.Dock = DockStyle.Fill;
-            dgvYouDoNotFollowBack.GridColor = Color.FromArgb(230, 230, 230);
-            dgvYouDoNotFollowBack.Location = new Point(3, 3);
-            dgvYouDoNotFollowBack.Name = "dgvYouDoNotFollowBack";
-            dgvYouDoNotFollowBack.ReadOnly = true;
-            dgvYouDoNotFollowBack.RowHeadersVisible = false;
-            dgvYouDoNotFollowBack.RowHeadersWidth = 62;
-            dgvYouDoNotFollowBack.Size = new Size(686, 213);
-            dgvYouDoNotFollowBack.TabIndex = 0;
-            // 
-            // tabMutualFollowers
-            // 
-            tabMutualFollowers.Controls.Add(dgvMutualFollowers);
-            tabMutualFollowers.Location = new Point(4, 34);
-            tabMutualFollowers.Name = "tabMutualFollowers";
-            tabMutualFollowers.Padding = new Padding(3);
-            tabMutualFollowers.Size = new Size(692, 219);
-            tabMutualFollowers.TabIndex = 2;
-            tabMutualFollowers.Text = "Mutuos";
-            tabMutualFollowers.UseVisualStyleBackColor = true;
-            // 
-            // dgvMutualFollowers
-            // 
-            dgvMutualFollowers.AllowUserToAddRows = false;
-            dgvMutualFollowers.AllowUserToDeleteRows = false;
-            dgvMutualFollowers.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgvMutualFollowers.BackgroundColor = Color.White;
-            dgvMutualFollowers.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvMutualFollowers.Dock = DockStyle.Fill;
-            dgvMutualFollowers.GridColor = Color.FromArgb(230, 230, 230);
-            dgvMutualFollowers.Location = new Point(3, 3);
-            dgvMutualFollowers.Name = "dgvMutualFollowers";
-            dgvMutualFollowers.ReadOnly = true;
-            dgvMutualFollowers.RowHeadersVisible = false;
-            dgvMutualFollowers.RowHeadersWidth = 62;
-            dgvMutualFollowers.Size = new Size(686, 213);
-            dgvMutualFollowers.TabIndex = 0;
-            // 
-            // dgvNotFollowingBack
-            // 
-            dgvNotFollowingBack.AllowUserToAddRows = false;
-            dgvNotFollowingBack.AllowUserToDeleteRows = false;
-            dgvNotFollowingBack.Anchor = AnchorStyles.Top | AnchorStyles.Bottom;
-            dgvNotFollowingBack.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgvNotFollowingBack.BackgroundColor = Color.White;
-            dgvNotFollowingBack.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvNotFollowingBack.GridColor = Color.FromArgb(230, 230, 230);
-            dgvNotFollowingBack.Location = new Point(234, 362);
-            dgvNotFollowingBack.Name = "dgvNotFollowingBack";
-            dgvNotFollowingBack.ReadOnly = true;
-            dgvNotFollowingBack.RowHeadersVisible = false;
-            dgvNotFollowingBack.RowHeadersWidth = 62;
-            dgvNotFollowingBack.Size = new Size(700, 263);
-            dgvNotFollowingBack.TabIndex = 0;
+            dgvResults.AllowUserToAddRows = false;
+            dgvResults.AllowUserToDeleteRows = false;
+            dgvResults.Anchor = AnchorStyles.Top | AnchorStyles.Bottom;
+            dgvResults.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvResults.BackgroundColor = Color.White;
+            dgvResults.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvResults.GridColor = Color.FromArgb(230, 230, 230);
+            dgvResults.Location = new Point(234, 362);
+            dgvResults.Name = "dgvResults";
+            dgvResults.ReadOnly = true;
+            dgvResults.RowHeadersVisible = false;
+            dgvResults.RowHeadersWidth = 62;
+            dgvResults.Size = new Size(700, 263);
+            dgvResults.TabIndex = 0;
             // 
             // notifyIcon1
             // 
@@ -492,6 +407,7 @@ namespace InstaFollowAnalyzer
             statFollowingPanel.Padding = new Padding(0, 12, 0, 12);
             statFollowingPanel.Size = new Size(188, 104);
             statFollowingPanel.TabIndex = 1;
+            statFollowingPanel.Anchor = AnchorStyles.Top;
             // 
             // MainForm
             // 
@@ -499,7 +415,7 @@ namespace InstaFollowAnalyzer
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(248, 250, 252);
             ClientSize = new Size(1169, 657);
-            Controls.Add(dgvNotFollowingBack);
+            Controls.Add(dgvResults);
             Controls.Add(tabButtonsPanel);
             Controls.Add(searchPanel);
             Controls.Add(statMutualPanel);
@@ -521,12 +437,7 @@ namespace InstaFollowAnalyzer
             statNotFollowingBackPanel.ResumeLayout(false);
             statYouDoNotFollowBackPanel.ResumeLayout(false);
             statMutualPanel.ResumeLayout(false);
-            tabResults.ResumeLayout(false);
-            tabYouDoNotFollowBack.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)dgvYouDoNotFollowBack).EndInit();
-            tabMutualFollowers.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)dgvMutualFollowers).EndInit();
-            ((System.ComponentModel.ISupportInitialize)dgvNotFollowingBack).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dgvResults).EndInit();
             statFollowingPanel.ResumeLayout(false);
             ResumeLayout(false);
         }
@@ -559,13 +470,7 @@ namespace InstaFollowAnalyzer
         private Label lblYouDoNotFollowBackCaption;
         private Panel statMutualPanel;
         private Label lblMutualCaption;
-        private TabControl tabResults;
-        private TabPage tabNotFollowingBack;
-        private DataGridView dgvNotFollowingBack;
-        private TabPage tabYouDoNotFollowBack;
-        private DataGridView dgvYouDoNotFollowBack;
-        private TabPage tabMutualFollowers;
-        private DataGridView dgvMutualFollowers;
+        private DataGridView dgvResults;
         private NotifyIcon notifyIcon1;
     }
 }

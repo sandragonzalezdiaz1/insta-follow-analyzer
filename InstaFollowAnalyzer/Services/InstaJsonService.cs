@@ -7,9 +7,10 @@ namespace InstaFollowAnalyzer.Services
     {
         private readonly JsonSerializerOptions _jsonOptions = new()
         {
-            PropertyNameCaseInsensitive = true // This option allows the deserializer to ignore case when matching JSON property names to C# class properties
+            PropertyNameCaseInsensitive = true // Permite reconocer las claves del JSON de Instagram aunque cambien las mayúscula
         };
 
+        // Instagram guarda los seguidos dentro de un objeto relationships_following
         public async Task<List<string>> ReadFollowingUsernamesAsync(string filePath)
         {
             string json = await File.ReadAllTextAsync(filePath);
@@ -27,6 +28,7 @@ namespace InstaFollowAnalyzer.Services
                 ?? [];
         }
 
+        // Instagram guarda los seguidores como una lista raíz, con los usuarios dentro de string_list_data
         public async Task<List<string>> ReadFollowerUsernamesAsync(string filePath)
         {
             string json = await File.ReadAllTextAsync(filePath);
@@ -44,6 +46,7 @@ namespace InstaFollowAnalyzer.Services
                 ?? [];
         }
 
+        // Comprueba que el archivo tenga la estructura esperada antes de deserializarlo
         private static void ValidateFollowingJson(string json)
         {
             using JsonDocument document = ParseJson(json);
@@ -94,6 +97,7 @@ namespace InstaFollowAnalyzer.Services
             }
         }
 
+        // Intenta parsear el JSON y lanza una excepción si no es válido
         private static JsonDocument ParseJson(string json)
         {
             try

@@ -42,10 +42,7 @@ namespace InstaFollowAnalyzer
         {
             string? filePath = SelectJsonFile();
 
-            if (filePath is null)
-            {
-                return;
-            }
+            if (filePath is null) return;
 
             try
             {
@@ -80,11 +77,8 @@ namespace InstaFollowAnalyzer
         {
             string? filePath = SelectJsonFile();
 
-            if (filePath is null)
-            {
-                return;
-            }
-
+            if (filePath is null) return;
+            
             try
             {
                 _followers = await _instaJsonService.ReadFollowerUsernamesAsync(filePath);
@@ -266,13 +260,11 @@ namespace InstaFollowAnalyzer
             button.Font = new Font(button.Font, isSelected ? FontStyle.Bold : FontStyle.Regular);
         }
 
+        // Reorganiza los controles creados por el diseñador en un layout centrado y adaptable
         private void BuildResponsiveLayout()
         {
-            if (_bodyLayout is not null)
-            {
-                return;
-            }
-
+            if (_bodyLayout is not null) return;
+            
             SuspendLayout();
 
             Controls.Remove(statFollowingPanel);
@@ -571,6 +563,7 @@ namespace InstaFollowAnalyzer
         private void SetGridDataSource(
             List<InstagramUserRow> rows)
         {
+            // Reinicia el enlace de datos para que la tabla se refresque al cambiar de pestaña o realizar una nueva búsqueda
             dgvResults.DataSource = null;
             dgvResults.DataSource = rows;
         }
@@ -592,11 +585,9 @@ namespace InstaFollowAnalyzer
 
             string? url = (grid.Rows[e.RowIndex].DataBoundItem as InstagramUserRow)?.ProfileUrl;
 
-            if (string.IsNullOrWhiteSpace(url))
-            {
-                return;
-            }
-
+            if (string.IsNullOrWhiteSpace(url)) return;
+            
+            // Usa el shell del sistema para abrir el perfil de instagram en el navegador predeterminado del usuario
             Process.Start(new ProcessStartInfo
             {
                 FileName = url,
@@ -604,12 +595,14 @@ namespace InstaFollowAnalyzer
             });
         }
 
+        // Clase interna para representar una fila de usuario de Instagram en la tabla de resultados
         private class InstagramUserRow
         {
             public string Username { get; set; } = "";
             public string ProfileUrl { get; set; } = "";
         }
 
+        // Define un enum para representar los tipos de resultados de la comparación de seguidores y seguidos
         private enum ResultType
         {
             NotFollowingBack,

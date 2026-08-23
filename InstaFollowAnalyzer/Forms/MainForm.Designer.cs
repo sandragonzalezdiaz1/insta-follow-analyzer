@@ -285,6 +285,7 @@ namespace InstaFollowAnalyzer
             // 
             // statFollowersPanel
             // 
+            statFollowersPanel.Anchor = AnchorStyles.Top;
             statFollowersPanel.BackColor = Color.FromArgb(232, 249, 250);
             statFollowersPanel.Controls.Add(lblFollowersCaption);
             statFollowersPanel.Controls.Add(lblFollowersCount);
@@ -293,7 +294,6 @@ namespace InstaFollowAnalyzer
             statFollowersPanel.Padding = new Padding(0, 12, 0, 12);
             statFollowersPanel.Size = new Size(188, 104);
             statFollowersPanel.TabIndex = 2;
-            statFollowersPanel.Anchor = AnchorStyles.Top;
             // 
             // lblFollowersCaption
             // 
@@ -308,6 +308,7 @@ namespace InstaFollowAnalyzer
             // 
             // statNotFollowingBackPanel
             // 
+            statNotFollowingBackPanel.Anchor = AnchorStyles.Top;
             statNotFollowingBackPanel.BackColor = Color.FromArgb(232, 249, 250);
             statNotFollowingBackPanel.Controls.Add(lblNotFollowingBackCaption);
             statNotFollowingBackPanel.Controls.Add(lblNotFollowingBackCount);
@@ -316,7 +317,6 @@ namespace InstaFollowAnalyzer
             statNotFollowingBackPanel.Padding = new Padding(0, 12, 0, 12);
             statNotFollowingBackPanel.Size = new Size(188, 104);
             statNotFollowingBackPanel.TabIndex = 3;
-            statNotFollowingBackPanel.Anchor = AnchorStyles.Top;
             // 
             // lblNotFollowingBackCaption
             // 
@@ -331,6 +331,7 @@ namespace InstaFollowAnalyzer
             // 
             // statYouDoNotFollowBackPanel
             // 
+            statYouDoNotFollowBackPanel.Anchor = AnchorStyles.Top;
             statYouDoNotFollowBackPanel.BackColor = Color.FromArgb(232, 249, 250);
             statYouDoNotFollowBackPanel.Controls.Add(lblYouDoNotFollowBackCaption);
             statYouDoNotFollowBackPanel.Controls.Add(lblYouDoNotFollowBackCount);
@@ -339,7 +340,6 @@ namespace InstaFollowAnalyzer
             statYouDoNotFollowBackPanel.Padding = new Padding(0, 12, 0, 12);
             statYouDoNotFollowBackPanel.Size = new Size(188, 104);
             statYouDoNotFollowBackPanel.TabIndex = 4;
-            statYouDoNotFollowBackPanel.Anchor = AnchorStyles.Top;
             // 
             // lblYouDoNotFollowBackCaption
             // 
@@ -354,6 +354,7 @@ namespace InstaFollowAnalyzer
             // 
             // statMutualPanel
             // 
+            statMutualPanel.Anchor = AnchorStyles.Top;
             statMutualPanel.BackColor = Color.FromArgb(232, 249, 250);
             statMutualPanel.Controls.Add(lblMutualCaption);
             statMutualPanel.Controls.Add(lblMutualCount);
@@ -362,7 +363,6 @@ namespace InstaFollowAnalyzer
             statMutualPanel.Padding = new Padding(0, 12, 0, 12);
             statMutualPanel.Size = new Size(188, 104);
             statMutualPanel.TabIndex = 5;
-            statMutualPanel.Anchor = AnchorStyles.Top;
             // 
             // lblMutualCaption
             // 
@@ -399,6 +399,7 @@ namespace InstaFollowAnalyzer
             // 
             // statFollowingPanel
             // 
+            statFollowingPanel.Anchor = AnchorStyles.Top;
             statFollowingPanel.BackColor = Color.FromArgb(232, 249, 250);
             statFollowingPanel.Controls.Add(lblFollowingCaption);
             statFollowingPanel.Controls.Add(lblFollowingCount);
@@ -407,7 +408,6 @@ namespace InstaFollowAnalyzer
             statFollowingPanel.Padding = new Padding(0, 12, 0, 12);
             statFollowingPanel.Size = new Size(188, 104);
             statFollowingPanel.TabIndex = 1;
-            statFollowingPanel.Anchor = AnchorStyles.Top;
             // 
             // MainForm
             // 

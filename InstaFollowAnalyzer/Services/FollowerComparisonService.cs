@@ -8,7 +8,7 @@ namespace InstaFollowAnalyzer.Services
        List<string> followers)
         {
             return following
-                .Except(followers, StringComparer.OrdinalIgnoreCase)
+                .Except(followers, StringComparer.OrdinalIgnoreCase) 
                 .OrderBy(username => username)
                 .ToList();
         }

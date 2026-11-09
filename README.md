@@ -63,44 +63,46 @@ Los datos se obtienen utilizando la función oficial de Instagram para descargar
 Desde Instagram:
 
 1. Accede a tu perfil.
-2. Abre **Configuración y actividad**.
+2. Abre **Cuenta de Meta**.
 3. Entra en **Centro de cuentas**.
-4. Selecciona **Tu información y permisos**.
-5. Pulsa **Descargar tu información**.
+4. Selecciona **Tu información y tus permisos**.
+5. Pulsa **Exportar tu información**.
 
 ### 2. Selecciona tu cuenta de Instagram
 
-Selecciona la cuenta de Instagram cuyos seguidores y seguidos quieras analizar.
+Selecciona la cuenta de Instagram cuyos seguidores y seguidos quieras analizar. Selecciona la opción de **Exportar al dispositivo**.
 
 Cuando Instagram pregunte que información quieres descargar, selecciona la opción para elegir únicamente una parte de tu información.
 
-### 3. Selecciona seguidores y seguidos
+### 3. Selecciona seguidores y siguiendo
 
 Dentro de las categorias disponibles, busca la información relacionada con tus conexiones y selecciona:
 
-**Seguidores y seguidos**
+**Seguidores y siguiendo**
 
 No es necesario descargar toda la información de tu cuenta.
 
-### 4. Selecciona el formato JSON
+### 4. Selecciona el intervalo de fechas
 
-Cuando Instagram te permita configurar la descarga, selecciona:
+Si quieres obtener la información más completa posible de tu cuenta, selecciona **Cualquier fecha**.
 
-**Formato: JSON**
+### 5. Selecciona el formato JSON
+
+En Formato selecciona **JSON**.
 
 Es importante utilizar JSON y no HTML, ya que InstaFollowAnalyzer procesa directamente estos archivos.
 
-También puedes seleccionar el intervalo de fechas que corresponda. Si quieres obtener la información más completa posible de tu cuenta, selecciona todo el periodo disponible.
+### 6. Solicita la descarga
 
-### 5. Solicita la descarga
+También se puede seleccionar la Calidad del contenido multimedia, en este caso, como no exportaremos ni imágenes ni videos, se puede dejar en **Calidad más baja**. 
 
-Confirma la solicitud.
+Una vez tengas todo configurado, inicia la exportación.
 
 Instagram preparará un archivo con la información seleccionada. Este proceso puede tardar un tiempo.
 
-Cuando este disponible, descarga el archivo `.zip` y descomprimelo en tu ordenador.
+Cuando recibas el correo, sigue los pasos para descargar el archivo `.zip` y descomprimelo en tu ordenador.
 
-### 6. Localiza los archivos
+### 7. Localiza los archivos
 
 Dentro de la descarga encontrarás una carpeta relacionada con seguidores y seguidos.
 
